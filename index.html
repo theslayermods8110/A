@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINECRAFT PLUGINS SERVER Y MAS....</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-accent: #8A2BE2; /* BlueViolet */
+            --dark-accent: #4B0082;   /* Indigo */
+            --light-accent: #a75af0; /* Lighter violet/blue for hover */
+            --medium-accent: #6a0dad; /* Medium Purple */
+            --text-light: #e0e0e0;
+            --text-medium: #b0b0b0;
+            --text-dark: #333;
+            --dark-bg: #12121f; /* Dark blueish-purple */
+            --darker-bg: #0b0b14; /* Even Darker */
+            --container-bg: rgba(31, 31, 46, 0.92); /* Slightly more opaque dark */
+            --input-bg: #1f1f2e; /* Dark input bg */
+            --border-color: var(--primary-accent);
+            --border-focus: var(--light-accent);
+            --shadow-color: rgba(138, 43, 226, 0.4); /* Shadow from primary */
+            --border-radius-std: 8px;
+            --transition-fast: 0.2s ease-out;
+            --transition-std: 0.3s ease-out;
+            --info-color: #17a2b8;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --link-color: var(--light-accent);
+            --link-hover-color: white;
+        }
+
+        body[data-theme="nether"] {
+            --primary-accent: #dc3545; --dark-accent: #8B0000; --light-accent: #f05060; --medium-accent: #b02a37;
+            --dark-bg: #301010; --darker-bg: #1a0808; --container-bg: rgba(46, 20, 20, 0.92); --input-bg: #401818;
+            --shadow-color: rgba(220, 53, 69, 0.4); --border-color: var(--primary-accent); --border-focus: var(--light-accent); --link-color: var(--light-accent);
+        }
+        body[data-theme="nether"] .pro-button:not(.copy-button):not([data-theme]):not(.download-button) { background: linear-gradient(90deg, var(--primary-accent) 0%, var(--dark-accent) 100%); }
+        body[data-theme="nether"] .pro-button:not(.copy-button):not([data-theme]):not(.download-button):hover:not(:disabled) { background: linear-gradient(90deg, var(--light-accent) 0%, var(--medium-accent) 100%); }
+
+        body[data-theme="end"] {
+            --primary-accent: #4a0e64; --dark-accent: #1a001f; --light-accent: #7b1fa2; --medium-accent: #5d107a;
+            --text-light: #f0e8ff; --text-medium: #c0b0d0; --dark-bg: #1f182e; --darker-bg: #0f0a1a;
+            --container-bg: rgba(30, 20, 46, 0.92); --input-bg: #2a1f3a; --shadow-color: rgba(74, 14, 100, 0.4);
+            --border-color: var(--primary-accent); --border-focus: var(--light-accent); --success-color: #4caf50; --error-color: #ff5252; --link-color: var(--light-accent);
+        }
+         body[data-theme="end"] .pro-button:not(.copy-button):not([data-theme]):not(.download-button) { background: linear-gradient(90deg, var(--primary-accent) 0%, var(--dark-accent) 100%); }
+        body[data-theme="end"] .pro-button:not(.copy-button):not([data-theme]):not(.download-button):hover:not(:disabled) { background: linear-gradient(90deg, var(--light-accent) 0%, var(--medium-accent) 100%); }
+
+        ::selection { background-color: var(--primary-accent); color: white; }
+        body { font-family: 'Roboto', sans-serif; line-height: 1.7; margin: 0; padding: 25px; background: linear-gradient(145deg, var(--dark-bg) 0%, var(--darker-bg) 100%); color: var(--text-light); min-height: 100vh; box-sizing: border-box; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease; }
+        .container { max-width: 1200px; margin: 20px auto; background: var(--container-bg); backdrop-filter: blur(6px); padding: 40px 50px; border-radius: var(--border-radius-std); border: 1px solid rgba(var(--primary-accent-rgb, 138, 43, 226), 0.3); box-shadow: 0 10px 40px var(--shadow-color); animation: fadeInContainer 0.6s var(--transition-std) forwards; opacity: 0; transform: translateY(15px); transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
+        body[data-theme="default"] .container { --primary-accent-rgb: 138, 43, 226; } body[data-theme="nether"] .container { --primary-accent-rgb: 220, 53, 69; } body[data-theme="end"] .container { --primary-accent-rgb: 74, 14, 100; }
+        @keyframes fadeInContainer { to { opacity: 1; transform: translateY(0); } }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 45px; padding-bottom: 25px; border-bottom: 1px solid rgba(var(--primary-accent-rgb, 138, 43, 226), 0.25); transition: border-color 0.4s ease; }
+        .header-area h1 { font-family: 'Orbitron', sans-serif; color: var(--primary-accent); font-size: 2.1em; letter-spacing: 1px; text-shadow: 0 0 10px rgba(var(--primary-accent-rgb, 138, 43, 226), 0.5); margin: 0; padding: 0; border: none; flex-grow: 1; text-align: left; animation: slideInTitle 0.5s var(--transition-std) forwards; transform: translateX(-25px); opacity: 0; transition: color 0.4s ease, text-shadow 0.4s ease; }
+        .header-area h1 i { margin-right: 15px; vertical-align: baseline; font-size: 0.9em; opacity: 0.8; }
+        @keyframes slideInTitle { to { transform: translateX(0); opacity: 1; } }
+        .menu-container { position: relative; display: inline-block; margin-left: 25px; }
+        .menu-button { background: none; border: none; color: var(--text-medium); font-size: 2em; cursor: pointer; padding: 8px; line-height: 1; transition: color var(--transition-fast), transform var(--transition-std) cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .menu-button:hover, .menu-button:focus { color: var(--light-accent); transform: rotate(60deg) scale(1.15); outline: none; }
+        .menu-dropdown { display: none; position: absolute; right: 0; top: calc(100% + 12px); background-color: var(--input-bg); min-width: 230px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); z-index: 100; border-radius: var(--border-radius-std); border: 1px solid var(--medium-accent); overflow: hidden; animation: popInMenu 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: top right; transition: background-color 0.4s ease, border-color 0.4s ease; }
+        .menu-dropdown.active { display: block; }
+        @keyframes popInMenu { from { transform: scale(0.85) translateY(-15px) rotateX(-10deg); opacity: 0; } to { transform: scale(1) translateY(0) rotateX(0deg); opacity: 1; } }
+        .menu-dropdown a { color: var(--text-medium); padding: 15px 22px; text-decoration: none; display: flex; align-items: center; gap: 15px; transition: background-color var(--transition-fast), color var(--transition-fast), padding-left var(--transition-fast); font-size: 1.05em; border-bottom: 1px solid rgba(var(--medium-accent-rgb, 106, 13, 173), 0.2); }
+        body[data-theme="default"] .menu-dropdown a { --medium-accent-rgb: 106, 13, 173; } body[data-theme="nether"] .menu-dropdown a { --medium-accent-rgb: 176, 42, 55; } body[data-theme="end"] .menu-dropdown a { --medium-accent-rgb: 93, 16, 122; }
+        .menu-dropdown a:last-child { border-bottom: none; }
+        .menu-dropdown a i { width: 1.4em; text-align: center; color: var(--primary-accent); transition: color var(--transition-fast), transform var(--transition-fast); opacity: 0.9; }
+        .menu-dropdown a:hover { background-color: var(--primary-accent); color: white; padding-left: 27px; }
+        .menu-dropdown a:hover i { color: white; transform: scale(1.1) rotate(-5deg); }
+        .menu-dropdown a.active-menu-link { background-color: var(--primary-accent); color: white; padding-left: 27px; font-weight: bold; }
+        .menu-dropdown a.active-menu-link i { color: white; transform: scale(1.1); }
+        .content-section-wrapper { margin-top: 40px; }
+        .content-section { background-color: var(--input-bg); padding: 30px 35px; border-radius: var(--border-radius-std); border: 1px solid rgba(var(--primary-accent-rgb, 138, 43, 226), 0.15); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35); opacity: 0; display: none; animation: fadeInSection 0.4s var(--transition-std) forwards; transition: transform var(--transition-std), box-shadow var(--transition-std), background-color 0.4s ease, border-color 0.4s ease; }
+        .content-section:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(var(--primary-accent-rgb, 138, 43, 226), 0.25); }
+        .content-section.active-section { display: block; }
+        @keyframes fadeInSection { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1.4em; color: var(--primary-accent); margin-top: 0; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 1px solid rgba(var(--primary-accent-rgb, 138, 43, 226), 0.3); display: flex; align-items: center; gap: 12px; transition: color 0.4s ease, border-color 0.4s ease; }
+        .section-title i { opacity: 0.8; }
+        .pro-input { width: calc(100% - 26px); padding: 12px 13px; background-color: var(--darker-bg); color: var(--text-light); border: 1px solid var(--medium-accent); border-radius: 6px; font-size: 1em; outline: none; transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color 0.4s ease, color 0.4s ease; margin-bottom: 15px; }
+        .pro-input::placeholder { color: #666; }
+        .pro-input:focus { border-color: var(--border-focus); box-shadow: 0 0 8px var(--shadow-color); }
+        .pro-button { display: inline-flex; align-items: center; gap: 8px; padding: 12px 25px; border-radius: 6px; border: none; cursor: pointer; font-size: 1em; font-weight: bold; text-decoration: none; transition: background var(--transition-std), transform var(--transition-fast), box-shadow var(--transition-std); background: linear-gradient(90deg, var(--primary-accent) 0%, var(--dark-accent) 100%); color: white; box-shadow: 0 4px 10px var(--shadow-color); white-space: nowrap; }
+        .pro-button:hover:not(:disabled) { background: linear-gradient(90deg, var(--light-accent) 0%, var(--medium-accent) 100%); box-shadow: 0 6px 15px var(--shadow-color); transform: translateY(-2px); }
+        .pro-button:active:not(:disabled) { transform: translateY(0); box-shadow: 0 2px 5px var(--shadow-color); }
+        .pro-button:disabled { background: var(--medium-accent) !important; opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .skin-display-area { margin-top: 20px; text-align: center; min-height: 120px; background-color: rgba(0,0,0,0.1); border-radius: var(--border-radius-std); padding: 15px; border: 1px dashed rgba(var(--primary-accent-rgb, 138, 43, 226), 0.2); transition: border-color 0.4s ease; }
+        .skin-display-area img { image-rendering: pixelated; vertical-align: middle; max-width: 100px; height: auto; margin: 5px; border: 1px solid var(--medium-accent); background: var(--darker-bg); padding: 5px; border-radius: 4px; transition: border-color 0.4s ease, background-color 0.4s ease; }
+        .skin-display-area p { color: var(--text-medium); font-style: italic; transition: color 0.4s ease; }
+        .download-button { margin-top: 15px; background: var(--success-color); color: white; border: none; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4); }
+        .download-button:hover:not(:disabled) { background: #218838; box-shadow: 0 6px 15px rgba(40, 167, 69, 0.5); }
+        .download-button i { margin-right: 8px; }
+        #downloadSkinButtonContainer { margin-top: 15px; min-height: 50px; }
+        #downloadSkinLink:not([href]) { display: none; }
+        .command-generator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .command-param-group { display: flex; flex-direction: column; gap: 5px; }
+        .command-param-group label { font-size: 0.9em; color: var(--text-medium); margin-bottom: 0; }
+        .command-param-group input, .command-param-group select { width: calc(100% - 26px); padding: 10px 12px; margin-bottom: 5px; /* Adjusted margin */ }
+        .cmd-param-hidden { display: none !important; } /* Hide unused params */
+        #generatedCommandOutput { width: calc(100% - 30px); height: 120px; padding: 15px; border: 1px solid var(--medium-accent); border-radius: 6px; font-family: "Consolas", "Courier New", Courier, monospace; font-size: 14px; white-space: pre-wrap; overflow: auto; resize: vertical; background-color: var(--darker-bg); color: var(--text-light); margin-top: 15px; margin-bottom: 10px; transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease; }
+        .copy-button { background: var(--input-bg); color: var(--primary-accent); border: 1px solid var(--primary-accent); }
+        .copy-button:hover { background: var(--primary-accent); color: white; }
+        #generatedCommandOutput.command-invalid { border-color: var(--error-color); color: var(--error-color); box-shadow: 0 0 8px rgba(var(--error-color-rgb, 220, 53, 69), 0.4); }
+        body[data-theme="default"] #generatedCommandOutput.command-invalid { --error-color-rgb: 220, 53, 69; }
+        body[data-theme="nether"] #generatedCommandOutput.command-invalid { --error-color-rgb: 220, 53, 69; } /* Same red is fine */
+        body[data-theme="end"] #generatedCommandOutput.command-invalid { --error-color-rgb: 255, 82, 82; } /* Use End theme's red */
+        .coord-group { display: flex; gap: 5px; }
+        .coord-group input { flex: 1; width: auto; } /* Make coord inputs share space */
+        .server-status-inputs { display: flex; gap: 15px; margin-bottom: 15px; }
+        .server-status-inputs input[type="text"] { flex-grow: 3; margin-bottom: 0; }
+        .server-status-inputs input[type="number"] { flex-grow: 1; margin-bottom: 0; width: 80px; }
+        .status-results-area { margin-top: 20px; padding: 15px; background-color: rgba(0,0,0,0.15); border: 1px dashed rgba(var(--primary-accent-rgb, 138, 43, 226), 0.2); border-radius: 6px; min-height: 50px; color: var(--text-medium); transition: border-color 0.4s ease, color 0.4s ease; }
+        .status-results-area strong { color: var(--text-light); transition: color 0.4s ease;}
+        .status-results-area .status-online { color: var(--success-color); font-weight: bold; }
+        .status-results-area .status-offline { color: var(--error-color); font-weight: bold; }
+        .status-results-area .motd { font-style: normal; white-space: pre-wrap; }
+        .status-results-area img.favicon { vertical-align: middle; margin-right: 8px; width: 16px; height: 16px; image-rendering: pixelated; }
+        #theme-changer .pro-button.active-theme { box-shadow: 0 0 0 3px var(--light-accent), 0 4px 10px var(--shadow-color); transform: translateY(-1px); }
+        #create-server ul { list-style: none; padding: 0; }
+        #create-server li { background-color: var(--darker-bg); padding: 15px 20px; margin-bottom: 15px; border-radius: var(--border-radius-std); border: 1px solid rgba(var(--primary-accent-rgb, 138, 43, 226), 0.2); transition: background-color 0.3s ease, border-color 0.3s ease; }
+        #create-server li:hover { background-color: rgba(var(--primary-accent-rgb, 138, 43, 226), 0.1); }
+        #create-server h3 { color: var(--primary-accent); margin-top: 25px; margin-bottom: 10px; font-weight: bold; transition: color 0.4s ease; }
+        #create-server a { color: var(--link-color); text-decoration: none; font-weight: bold; transition: color var(--transition-fast); }
+        #create-server a:hover { color: var(--link-hover-color); text-decoration: underline; }
+        #create-server .description { font-size: 0.9em; color: var(--text-medium); display: block; margin-top: 5px; transition: color 0.4s ease; }
+        #create-server .external-link-icon { font-size: 0.8em; margin-left: 5px; opacity: 0.7; }
+
+    </style>
+</head>
+<body data-theme="default">
+
+<div class="container">
+    <div class="header-area">
+        <h1><i class="fas fa-server"></i>MINECRAFT PLUGINS SERVER Y MAS....</h1>
+        <div class="menu-container">
+            <button id="settings-menu-button" class="menu-button" aria-label="Abrir menú de opciones"> <i class="fas fa-gear"></i> </button>
+            <div id="settings-menu-dropdown" class="menu-dropdown">
+                <a href="#dashboard" data-target="dashboard" class="menu-link"><i class="fas fa-tachometer-alt fa-fw"></i> Dashboard</a>
+                <a href="#skin-viewer" data-target="skin-viewer" class="menu-link"><i class="fas fa-user-astronaut fa-fw"></i> Visor de Skins</a>
+                <a href="#cmd-generator" data-target="cmd-generator" class="menu-link"><i class="fas fa-terminal fa-fw"></i> Generador Comandos Pro</a>
+                <a href="#server-status" data-target="server-status" class="menu-link"><i class="fas fa-network-wired fa-fw"></i> Estado Servidor</a>
+                <a href="#create-server" data-target="create-server" class="menu-link"><i class="fas fa-plus-square fa-fw"></i> Crear Servidor</a>
+                <hr style="border-color: rgba(var(--medium-accent-rgb, 106, 13, 173), 0.2); margin: 5px 0; transition: border-color 0.4s ease;">
+                <a href="#settings" data-target="settings" class="menu-link"><i class="fas fa-sliders fa-fw"></i> Ajustes Panel</a>
+                <a href="#theme-changer" data-target="theme-changer" class="menu-link"><i class="fas fa-palette fa-fw"></i> Cambiar Tema</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section-wrapper">
+
+        <div id="dashboard" class="content-section">
+            <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+            <p>Bienvenido al panel de control. Selecciona una opción del menú <i class="fas fa-gear" style="font-size: 0.8em;"></i> para empezar.</p>
+        </div>
+
+        <div id="skin-viewer" class="content-section">
+            <h2 class="section-title"><i class="fas fa-user-astronaut"></i> Visor de Skins</h2>
+            <label for="skinUsernameInput" style="display: block; margin-bottom: 8px; color: var(--text-medium);">Nombre de Usuario Minecraft:</label>
+            <input type="text" id="skinUsernameInput" class="pro-input" placeholder="Notch">
+            <button id="fetchSkinButton" class="pro-button"><i class="fas fa-eye"></i> Mostrar Skin</button>
+            <div id="skinDisplay" class="skin-display-area">
+                <p>Introduce un nombre de usuario y pulsa mostrar.</p>
+                <div id="downloadSkinButtonContainer"> <a href="#" id="downloadSkinLink" class="pro-button download-button" download> <i class="fas fa-download"></i>Descargar Skin </a> </div>
+            </div>
+        </div>
+
+        <!-- Sección Generador de Comandos PRO -->
+        <div id="cmd-generator" class="content-section">
+            <h2 class="section-title"><i class="fas fa-terminal"></i> Generador de Comandos Pro</h2>
+            <div class="command-generator-grid">
+                <!-- Selectores Principales -->
+                 <div class="command-param-group">
+                    <label for="commandEdition"><i class="fab fa-java"></i>/<i class="fab fa-microsoft"></i> Edición:</label>
+                    <select id="commandEdition" class="pro-input">
+                        <option value="java">Java Edition</option>
+                        <option value="bedrock">Bedrock Edition</option>
+                    </select>
+                 </div>
+                 <div class="command-param-group">
+                    <label for="commandType"><i class="fas fa-list"></i> Tipo de Comando:</label>
+                    <select id="commandType" class="pro-input">
+                        <option value="give">/give</option>
+                        <option value="effect_give">/effect give</option>
+                        <option value="effect_clear">/effect clear</option>
+                        <option value="summon">/summon</option>
+                        <option value="tp">/tp</option>
+                        <option value="gamemode">/gamemode</option>
+                        <option value="xp_add">/xp add</option>
+                        <option value="xp_set">/xp set</option>
+                        <option value="kill">/kill</option>
+                        <option value="title">/title</option>
+                        <option value="say">/say</option>
+                        <option value="particle">/particle</option>
+                    </select>
+                 </div>
+
+                <!-- Parámetros Comunes -->
+                <div class="command-param-group" id="param-target">
+                    <label for="commandTarget"><i class="fas fa-bullseye"></i> Objetivo:</label>
+                    <input type="text" id="commandTarget" class="pro-input command-param-input" placeholder="@p, Steve...">
+                </div>
+
+                <!-- Parámetros /give -->
+                 <div class="command-param-group cmd-param-give cmd-param-hidden">
+                    <label for="commandItem"><i class="fas fa-cube"></i> Item/Bloque:</label>
+                    <input type="text" id="commandItem" class="pro-input command-param-input" placeholder="minecraft:diamond_sword">
+                 </div>
+                 <div class="command-param-group cmd-param-give cmd-param-hidden">
+                    <label for="commandCount"><i class="fas fa-hashtag"></i> Cantidad:</label>
+                    <input type="number" id="commandCount" class="pro-input command-param-input" placeholder="1" value="1">
+                 </div>
+                 <div class="command-param-group cmd-param-give cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                     <label for="commandNbt"><i class="fas fa-code"></i> NBT (Java, opcional):</label>
+                    <input type="text" id="commandNbt" class="pro-input command-param-input" placeholder="{Enchantments:[{id:sharpness,lvl:5}]}">
+                 </div>
+                 <div class="command-param-group cmd-param-give cmd-param-bedrock cmd-param-hidden"> <!-- Bedrock Only -->
+                    <label for="commandDataValue"><i class="fas fa-tag"></i> Valor de Datos (Bedrock, opcional):</label>
+                    <input type="number" id="commandDataValue" class="pro-input command-param-input" placeholder="0">
+                </div>
+
+                 <!-- Parámetros /effect -->
+                <div class="command-param-group cmd-param-effect cmd-param-hidden">
+                    <label for="commandEffectName"><i class="fas fa-magic"></i> Efecto:</label>
+                    <input type="text" id="commandEffectName" class="pro-input command-param-input" placeholder="minecraft:speed / speed">
+                </div>
+                 <div class="command-param-group cmd-param-effect_give cmd-param-hidden">
+                    <label for="commandEffectDuration"><i class="fas fa-clock"></i> Duración (segundos):</label>
+                    <input type="number" id="commandEffectDuration" class="pro-input command-param-input" placeholder="30" value="30">
+                 </div>
+                 <div class="command-param-group cmd-param-effect_give cmd-param-hidden">
+                    <label for="commandEffectAmplifier"><i class="fas fa-signal"></i> Amplificador:</label>
+                    <input type="number" id="commandEffectAmplifier" class="pro-input command-param-input" placeholder="0" value="0">
+                 </div>
+                <div class="command-param-group cmd-param-effect_give cmd-param-hidden">
+                    <label for="commandEffectParticles"><i class="fas fa-eye-slash"></i> Ocultar Partículas:</label>
+                    <select id="commandEffectParticles" class="pro-input command-param-input">
+                        <option value="false">No</option>
+                        <option value="true">Sí</option>
+                    </select>
+                 </div>
+
+                <!-- Parámetros /summon -->
+                 <div class="command-param-group cmd-param-summon cmd-param-hidden">
+                    <label for="commandSummonEntity"><i class="fas fa-paw"></i> Entidad:</label>
+                    <input type="text" id="commandSummonEntity" class="pro-input command-param-input" placeholder="minecraft:pig">
+                 </div>
+                 <div class="command-param-group cmd-param-summon cmd-param-hidden">
+                    <label><i class="fas fa-map-marker-alt"></i> Posición (X Y Z):</label>
+                    <div class="coord-group">
+                         <input type="text" id="commandSummonX" class="pro-input command-param-input" placeholder="~">
+                         <input type="text" id="commandSummonY" class="pro-input command-param-input" placeholder="~">
+                         <input type="text" id="commandSummonZ" class="pro-input command-param-input" placeholder="~">
+                    </div>
+                 </div>
+                  <div class="command-param-group cmd-param-summon cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                     <label for="commandSummonNbt"><i class="fas fa-code"></i> NBT (Java, opcional):</label>
+                    <input type="text" id="commandSummonNbt" class="pro-input command-param-input" placeholder="{NoAI:1b}">
+                 </div>
+
+                 <!-- Parámetros /tp -->
+                 <div class="command-param-group cmd-param-tp cmd-param-hidden">
+                     <label for="commandTpDestination"><i class="fas fa-crosshairs"></i> Destino (Jugador o Coords):</label>
+                     <input type="text" id="commandTpDestination" class="pro-input command-param-input" placeholder="Player2 / ~ ~5 ~">
+                 </div>
+                 <div class="command-param-group cmd-param-tp cmd-param-bedrock cmd-param-hidden"> <!-- Bedrock Only Rotation -->
+                     <label><i class="fas fa-compass"></i> Rotación (Bedrock, opcional):</label>
+                     <div class="coord-group">
+                        <input type="text" id="commandTpYRot" class="pro-input command-param-input" placeholder="Y-Rot">
+                        <input type="text" id="commandTpXRot" class="pro-input command-param-input" placeholder="X-Rot">
+                     </div>
+                 </div>
+                 <div class="command-param-group cmd-param-tp cmd-param-bedrock cmd-param-hidden"> <!-- Bedrock Only Check -->
+                    <label for="commandTpCheck"><i class="fas fa-check-square"></i> Comprobar Carga:</label>
+                    <select id="commandTpCheck" class="pro-input command-param-input">
+                        <option value="false">No</option>
+                        <option value="true">Sí</option>
+                    </select>
+                 </div>
+
+                 <!-- Parámetros /gamemode -->
+                 <div class="command-param-group cmd-param-gamemode cmd-param-hidden">
+                    <label for="commandGamemodeMode"><i class="fas fa-gamepad"></i> Modo de Juego:</label>
+                    <select id="commandGamemodeMode" class="pro-input command-param-input">
+                        <option value="survival">Survival</option>
+                        <option value="creative">Creative</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="spectator" class="cmd-param-java">Spectator (Java)</option> <!-- Java only -->
+                    </select>
+                 </div>
+
+                 <!-- Parámetros /xp -->
+                <div class="command-param-group cmd-param-xp cmd-param-hidden">
+                    <label for="commandXpAmount"><i class="fas fa-arrow-up"></i> Cantidad:</label>
+                    <input type="number" id="commandXpAmount" class="pro-input command-param-input" placeholder="100">
+                </div>
+                <div class="command-param-group cmd-param-xp cmd-param-hidden">
+                    <label for="commandXpUnit"><i class="fas fa-level-up-alt"></i> Unidad:</label>
+                    <select id="commandXpUnit" class="pro-input command-param-input">
+                        <option value="points">Puntos</option>
+                        <option value="levels">Niveles</option>
+                    </select>
+                 </div>
+
+                 <!-- Parámetros /title -->
+                 <div class="command-param-group cmd-param-title cmd-param-hidden">
+                    <label for="commandTitleAction"><i class="fas fa-desktop"></i> Acción/Posición:</label>
+                    <select id="commandTitleAction" class="pro-input command-param-input">
+                        <option value="title">Título</option>
+                        <option value="subtitle">Subtítulo</option>
+                        <option value="actionbar">Barra de Acción</option>
+                        <option value="clear">Limpiar</option>
+                        <option value="reset">Restablecer</option>
+                        <option value="times">Tiempos</option>
+                    </select>
+                 </div>
+                  <div class="command-param-group cmd-param-title cmd-param-titletext cmd-param-hidden">
+                     <label for="commandTitleText"><i class="fas fa-font"></i> Texto (JSON para Java):</label>
+                     <input type="text" id="commandTitleText" class="pro-input command-param-input" placeholder='{"text":"Hola","color":"gold"} / Hola Mundo'>
+                 </div>
+                 <div class="command-param-group cmd-param-title cmd-param-times cmd-param-hidden">
+                    <label><i class="fas fa-stopwatch"></i> Tiempos (FadeIn, Stay, FadeOut):</label>
+                    <div class="coord-group">
+                        <input type="number" id="commandTitleFadeIn" class="pro-input command-param-input" placeholder="20" value="20">
+                        <input type="number" id="commandTitleStay" class="pro-input command-param-input" placeholder="60" value="60">
+                        <input type="number" id="commandTitleFadeOut" class="pro-input command-param-input" placeholder="20" value="20">
+                    </div>
+                 </div>
+
+                 <!-- Parámetros /say -->
+                 <div class="command-param-group cmd-param-say cmd-param-hidden">
+                     <label for="commandSayMessage"><i class="fas fa-comment"></i> Mensaje:</label>
+                     <input type="text" id="commandSayMessage" class="pro-input command-param-input" placeholder="¡Hola a todos!">
+                 </div>
+
+                <!-- Parámetros /particle -->
+                 <div class="command-param-group cmd-param-particle cmd-param-hidden">
+                     <label for="commandParticleName"><i class="fas fa-star"></i> Nombre de Partícula:</label>
+                     <input type="text" id="commandParticleName" class="pro-input command-param-input" placeholder="minecraft:flame">
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-hidden">
+                    <label><i class="fas fa-map-marker-alt"></i> Posición (X Y Z):</label>
+                    <div class="coord-group">
+                         <input type="text" id="commandParticleX" class="pro-input command-param-input" placeholder="~">
+                         <input type="text" id="commandParticleY" class="pro-input command-param-input" placeholder="~1">
+                         <input type="text" id="commandParticleZ" class="pro-input command-param-input" placeholder="~">
+                    </div>
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                    <label><i class="fas fa-arrows-alt"></i> Delta/Rango (dX dY dZ):</label>
+                    <div class="coord-group">
+                         <input type="number" id="commandParticleDX" class="pro-input command-param-input" placeholder="0" value="0">
+                         <input type="number" id="commandParticleDY" class="pro-input command-param-input" placeholder="0" value="0">
+                         <input type="number" id="commandParticleDZ" class="pro-input command-param-input" placeholder="0" value="0">
+                    </div>
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                    <label for="commandParticleSpeed"><i class="fas fa-tachometer-alt"></i> Velocidad:</label>
+                    <input type="number" id="commandParticleSpeed" class="pro-input command-param-input" placeholder="0" value="0">
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-hidden">
+                    <label for="commandParticleCount"><i class="fas fa-sort-numeric-up"></i> Cantidad:</label>
+                    <input type="number" id="commandParticleCount" class="pro-input command-param-input" placeholder="1" value="1">
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                    <label for="commandParticleMode"><i class="fas fa-eye"></i> Modo:</label>
+                     <select id="commandParticleMode" class="pro-input command-param-input">
+                        <option value="normal">Normal</option>
+                        <option value="force">Force</option>
+                    </select>
+                 </div>
+                 <div class="command-param-group cmd-param-particle cmd-param-java cmd-param-hidden"> <!-- Java Only -->
+                    <label for="commandParticleViewers"><i class="fas fa-users"></i> Visores (opcional):</label>
+                    <input type="text" id="commandParticleViewers" class="pro-input command-param-input" placeholder="@a">
+                 </div>
+
+            </div>
+            <!-- Output Area -->
+            <textarea id="generatedCommandOutput" readonly placeholder="/give @p minecraft:diamond 1"></textarea>
+            <button id="copyCommandButton" class="pro-button copy-button"><i class="fas fa-copy"></i> Copiar Comando</button>
+        </div>
+        <!-- FIN Sección Generador PRO -->
+
+
+        <div id="server-status" class="content-section">
+             <h2 class="section-title"><i class="fas fa-network-wired"></i> Estado del Servidor</h2>
+             <div class="server-status-inputs">
+                 <input type="text" id="serverIpInput" class="pro-input" placeholder="mc.hypixel.net">
+                 <input type="number" id="serverPortInput" class="pro-input" placeholder="25565">
+             </div>
+             <button id="checkStatusButton" class="pro-button"><i class="fas fa-plug"></i> Chequear</button>
+             <div id="statusResults" class="status-results-area"> <p>Introduce IP/Puerto y pulsa chequear.</p> </div>
+        </div>
+
+        <div id="create-server" class="content-section">
+            <h2 class="section-title"><i class="fas fa-plus-square"></i> Crear un Servidor Minecraft</h2>
+            <p style="color: var(--text-medium); margin-bottom: 25px;">Importante: Crear y ejecutar un servidor de Minecraft REAL requiere recursos (un ordenador/servidor dedicado o un servicio de hosting). **No se puede crear y alojar un servidor directamente desde esta página web.**</p>
+            <p>Aquí tienes enlaces a opciones REALES para crear tu servidor:</p>
+            <h3><i class="fas fa-rocket"></i> Opciones de Hosting Gestionado (Más fácil)</h3>
+            <ul>
+                <li> <a href="https://aternos.org/:es/" target="_blank" rel="noopener noreferrer">Aternos <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Hosting gratuito popular, bueno para empezar con amigos (puede tener colas y limitaciones).</span> </li>
+                <li> <a href="https://minehut.com/" target="_blank" rel="noopener noreferrer">Minehut <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Otra opción gratuita con planes de pago para más potencia. Interfaz web sencilla.</span> </li>
+                 <li> <a href="https://shockbyte.com/" target="_blank" rel="noopener noreferrer">Shockbyte <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Hosting de pago conocido, ofrece buen rendimiento y soporte para mods/plugins.</span> </li>
+                 <li> <a href="https://apexminecrafthosting.com/" target="_blank" rel="noopener noreferrer">Apex Hosting <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Otro hosting de pago popular, con buen soporte y paneles de control fáciles de usar.</span> </li>
+            </ul>
+             <h3><i class="fas fa-server"></i> Hazlo Tú Mismo (Requiere conocimientos técnicos)</h3>
+             <ul>
+                 <li> <a href="https://www.minecraft.net/es-es/download/server" target="_blank" rel="noopener noreferrer">Descarga Oficial del Servidor Minecraft <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Descarga el software oficial para ejecutar un servidor Java Edition en tu propio ordenador (necesitarás abrir puertos y tener un PC decente).</span> </li>
+                 <li> <a href="https://papermc.io/downloads" target="_blank" rel="noopener noreferrer">PaperMC <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Software de servidor optimizado y popular que soporta plugins (recomendado sobre el oficial para rendimiento).</span> </li>
+                 <li> <a href="https://www.oracle.com/cloud/free/" target="_blank" rel="noopener noreferrer">Oracle Cloud Free Tier <i class="fas fa-external-link-alt external-link-icon"></i></a> <span class="description">Opción avanzada: Ofrece máquinas virtuales gratuitas que pueden ser suficientes para un servidor pequeño/mediano (requiere configuración técnica).</span> </li>
+             </ul>
+             <p style="font-size: 0.85em; color: var(--text-medium); margin-top: 30px;"><i class="fas fa-info-circle"></i> Nota: Estos son enlaces a servicios externos. Esta página no está afiliada a ellos. Investiga y elige la opción que mejor se adapte a tus necesidades y presupuesto.</p>
+        </div>
+
+        <div id="settings" class="content-section">
+            <h2 class="section-title"><i class="fas fa-sliders"></i> Ajustes del Panel</h2>
+            <p>Configuraciones guardadas localmente en este navegador.</p>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;"> <input type="checkbox" id="savePrefCheck" style="width: 1.3em; height: 1.3em;"> Guardar preferencias (tema, etc.) </label>
+             <p style="font-size: 0.9em; color: var(--text-medium); margin-top: 15px;">Si marcas esta casilla, el tema seleccionado se guardará y aplicará automáticamente la próxima vez que visites la página desde este navegador.</p>
+        </div>
+
+        <div id="theme-changer" class="content-section">
+            <h2 class="section-title"><i class="fas fa-palette"></i> Cambiar Tema</h2>
+            <p>Selecciona un tema visual para el panel:</p>
+             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                 <button class="pro-button theme-button" data-theme="default">Predeterminado (Violeta)</button>
+                 <button class="pro-button theme-button" data-theme="nether" style="--local-primary: #dc3545; --local-dark: #8B0000; background: linear-gradient(90deg, var(--local-primary) 0%, var(--local-dark) 100%);">Tema Nether</button>
+                 <button class="pro-button theme-button" data-theme="end" style="--local-primary: #4a0e64; --local-dark: #1a001f; background: linear-gradient(90deg, var(--local-primary) 0%, var(--local-dark) 100%);">Tema End</button>
+             </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // --- Global Elements ---
+    const settingsMenuButton = document.getElementById('settings-menu-button');
+    const settingsMenuDropdown = document.getElementById('settings-menu-dropdown');
+    const internalMenuLinks = document.querySelectorAll('.menu-link');
+    const contentSections = document.querySelectorAll('.content-section');
+    const bodyElement = document.body;
+    const savePrefCheckbox = document.getElementById('savePrefCheck');
+    const themeButtons = document.querySelectorAll('.theme-button');
+
+    // --- LocalStorage Keys ---
+    const LS_SAVE_PREF_KEY = 'minecraftPanel_savePreferences';
+    const LS_THEME_KEY = 'minecraftPanel_selectedTheme';
+
+    // --- Menu Logic ---
+    function toggleSettingsMenu(event){ event.stopPropagation(); const i=settingsMenuDropdown.classList.contains('active'); settingsMenuDropdown.style.animation='none'; settingsMenuDropdown.offsetHeight; settingsMenuDropdown.style.animation=''; settingsMenuDropdown.classList.toggle('active'); }
+    settingsMenuButton.addEventListener('click', toggleSettingsMenu);
+    document.addEventListener('click', (event) => { if (settingsMenuDropdown.classList.contains('active') && !settingsMenuDropdown.contains(event.target) && !settingsMenuButton.contains(event.target)) { settingsMenuDropdown.classList.remove('active'); } });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && settingsMenuDropdown.classList.contains('active')) { settingsMenuDropdown.classList.remove('active'); } });
+
+    // --- Section Navigation Logic ---
+    function showSection(targetId){ contentSections.forEach(s => s.classList.remove('active-section')); internalMenuLinks.forEach(l => l.classList.remove('active-menu-link')); const tS=document.getElementById(targetId); if(tS){ tS.classList.add('active-section'); tS.style.animation='none'; tS.offsetHeight; tS.style.animation=''; } const aL=document.querySelector(`.menu-link[data-target="${targetId}"]`); if(aL) aL.classList.add('active-menu-link'); settingsMenuDropdown.classList.remove('active'); if(history.replaceState){ history.replaceState(null, null, `#${targetId}`); } else { window.location.hash=targetId; } }
+    internalMenuLinks.forEach(link => { link.addEventListener('click', (event) => { event.preventDefault(); const tId = link.dataset.target; if (tId) { showSection(tId); } }); });
+
+    // --- Theme and Settings Logic ---
+    function applyTheme(themeName){ bodyElement.dataset.theme = themeName; themeButtons.forEach(b => { b.classList.toggle('active-theme', b.dataset.theme === themeName); }); if (savePrefCheckbox.checked) { localStorage.setItem(LS_THEME_KEY, themeName); } }
+    function savePreferences(){ const sS = savePrefCheckbox.checked; localStorage.setItem(LS_SAVE_PREF_KEY, sS); if (sS) { const cT = bodyElement.dataset.theme || 'default'; localStorage.setItem(LS_THEME_KEY, cT); } else { localStorage.removeItem(LS_THEME_KEY); } }
+    themeButtons.forEach(button => { button.addEventListener('click', () => { applyTheme(button.dataset.theme); }); });
+    savePrefCheckbox.addEventListener('change', savePreferences);
+
+    // --- Initialization on Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const sSP = localStorage.getItem(LS_SAVE_PREF_KEY) === 'true'; savePrefCheckbox.checked = sSP;
+        let iT = 'default'; if (sSP) { iT = localStorage.getItem(LS_THEME_KEY) || 'default'; } applyTheme(iT);
+        const h = window.location.hash.substring(1); const vIT = document.getElementById(h) ? h : 'dashboard'; showSection(vIT);
+        initializeCommandGenerator(); // Setup command generator listeners and initial state
+        resetDownloadButton();
+    });
+
+
+    // --- Skin Viewer Logic ---
+    const skinUsernameInput = document.getElementById('skinUsernameInput');
+    const fetchSkinButton = document.getElementById('fetchSkinButton');
+    const skinDisplayArea = document.getElementById('skinDisplay');
+    const downloadSkinLink = document.getElementById('downloadSkinLink');
+    function resetDownloadButton(){ downloadSkinLink.removeAttribute('href'); downloadSkinLink.removeAttribute('download'); }
+    fetchSkinButton.addEventListener('click', () => { const u=skinUsernameInput.value.trim(); resetDownloadButton(); if(!u){ skinDisplayArea.querySelector('p').innerHTML='<span style="color: var(--error-color);">Por favor, introduce un nombre de usuario.</span>'; return; } skinDisplayArea.querySelector('p').innerHTML=`Buscando skin para <strong>${u}</strong>... <i class="fas fa-spinner fa-spin"></i>`; skinDisplayArea.querySelectorAll('img, .error-placeholder').forEach(e => e.remove()); const aU=`https://minotar.net/avatar/${encodeURIComponent(u)}/100.png`; const bU=`https://minotar.net/body/${encodeURIComponent(u)}/100.png`; const dU=`https://minotar.net/download/${encodeURIComponent(u)}`; const iP=[loadImage(aU), loadImage(bU)]; Promise.allSettled(iP).then(r => { let lC=r.filter(r=>r.status==='fulfilled').length; skinDisplayArea.querySelector('p').innerHTML=`Mostrando skin para: <strong>${u}</strong>`; let iH=''; let eO=false; if(r[0].status==='fulfilled'){iH+=`<img src="${aU}" alt="Avatar de ${u}" title="Cabeza de ${u}">`;}else{iH+='<span class="error-placeholder" style="color:var(--error-color); display: inline-block; border: 1px dashed var(--error-color); padding: 5px; margin: 5px; vertical-align: middle;">Error Avatar</span>'; eO=true;} if(r[1].status==='fulfilled'){iH+=`<img src="${bU}" alt="Cuerpo de ${u}" title="Cuerpo de ${u}">`;}else{iH+='<span class="error-placeholder" style="color:var(--error-color); display: inline-block; border: 1px dashed var(--error-color); padding: 5px; margin: 5px; vertical-align: middle;">Error Cuerpo</span>'; eO=true;} skinDisplayArea.querySelector('p').insertAdjacentHTML('afterend', iH); if(eO){skinDisplayArea.querySelector('p').innerHTML+=' <span style="color: var(--error-color);">(Algunas imágenes fallaron)</span>'; resetDownloadButton();} else { downloadSkinLink.href=dU; downloadSkinLink.download=`${u}_skin.png`; } }).catch(err=>{ skinDisplayArea.querySelector('p').innerHTML=`<span style="color: var(--error-color);">Error inesperado al buscar la skin.</span>`; resetDownloadButton(); }); });
+    function loadImage(src){ return new Promise((resolve, reject) => { const i=new Image(); i.onload=()=>resolve(src); i.onerror=reject; i.src=src; }); }
+
+
+    // --- Command Generator PRO Logic ---
+    const commandEditionSelect = document.getElementById('commandEdition');
+    const commandTypeSelect = document.getElementById('commandType');
+    const commandGeneratorGrid = document.querySelector('#cmd-generator .command-generator-grid');
+    const allParamInputs = commandGeneratorGrid.querySelectorAll('.command-param-input');
+    const allParamGroups = commandGeneratorGrid.querySelectorAll('.command-param-group');
+    const generatedCommandOutput = document.getElementById('generatedCommandOutput');
+    const copyCommandButton = document.getElementById('copyCommandButton');
+
+    // --- Basic Input Validation Functions ---
+    const isSelector = (str) => /^@([parse]|e(\[.*\])?)$/.test(str.trim());
+    const isUsername = (str) => /^[a-zA-Z0-9_]{3,16}$/.test(str.trim()); // Simple username check
+    const isCoordinate = (str) => /^(~|\^|~?-?\d+(\.\d+)?)$/.test(str.trim());
+    const isNumber = (str) => /^-?\d+$/.test(str.trim());
+    const isNonEmpty = (str) => str.trim() !== '';
+    const isValidItem = (str) => /^[a-z0-9_]+:[a-z0-9_]+$/i.test(str.trim()); // Basic minecraft:item format
+    const isValidJson = (str) => { if (!str.trim()) return true; try { JSON.parse(str); return true; } catch (e) { return false; } };
+
+    // Function to update parameter visibility
+    function updateCommandParamsVisibility() {
+        const edition = commandEditionSelect.value; // 'java' or 'bedrock'
+        const commandType = commandTypeSelect.value; // e.g., 'give', 'effect_give'
+
+        // 1. Hide all optional groups initially
+        allParamGroups.forEach(group => {
+            // Don't hide the main selectors or target (unless command doesn't need target)
+            if (group.id !== 'param-edition' && group.id !== 'param-type' && group.id !== 'param-target') {
+                group.classList.add('cmd-param-hidden');
+            }
+        });
+        // Hide target if command doesn't need it (e.g., particle without viewers)
+        document.getElementById('param-target').classList.toggle('cmd-param-hidden', ['particle'].includes(commandType)); // Example: hide target for particle base
+
+        // 2. Show relevant groups based on commandType
+        const baseCommand = commandType.split('_')[0]; // 'give', 'effect', 'summon', etc.
+        commandGeneratorGrid.querySelectorAll(`.cmd-param-${baseCommand}`).forEach(el => el.classList.remove('cmd-param-hidden'));
+        // Show specific sub-command groups if needed (like effect_give vs effect_clear)
+        commandGeneratorGrid.querySelectorAll(`.cmd-param-${commandType}`).forEach(el => el.classList.remove('cmd-param-hidden'));
+
+        // 3. Handle Edition-Specific Visibility
+        if (edition === 'java') {
+            commandGeneratorGrid.querySelectorAll('.cmd-param-bedrock').forEach(el => el.classList.add('cmd-param-hidden'));
+            commandGeneratorGrid.querySelectorAll('.cmd-param-java').forEach(el => {
+                // Only unhide if its base command group is also visible
+                 if (!el.closest('.command-param-group.cmd-param-hidden') && !el.classList.contains('cmd-param-hidden')) { // Check parent and self
+                     el.classList.remove('cmd-param-hidden');
+                 }
+            });
+             // Handle Java-specific option visibility (e.g., spectator mode)
+            commandGeneratorGrid.querySelector('#commandGamemodeMode option[value="spectator"]').disabled = false;
+        } else { // bedrock
+            commandGeneratorGrid.querySelectorAll('.cmd-param-java').forEach(el => el.classList.add('cmd-param-hidden'));
+            commandGeneratorGrid.querySelectorAll('.cmd-param-bedrock').forEach(el => {
+                 if (!el.closest('.command-param-group.cmd-param-hidden') && !el.classList.contains('cmd-param-hidden')) { // Check parent and self
+                     el.classList.remove('cmd-param-hidden');
+                 }
+            });
+            // Handle Bedrock-specific option disabling
+            const spectatorOption = commandGeneratorGrid.querySelector('#commandGamemodeMode option[value="spectator"]');
+            spectatorOption.disabled = true;
+            if (commandGeneratorGrid.querySelector('#commandGamemodeMode').value === 'spectator') {
+                 commandGeneratorGrid.querySelector('#commandGamemodeMode').value = 'survival'; // Switch if spectator was selected
+            }
+        }
+
+        // 4. Special cases (like /title variations)
+        if (commandType === 'title') {
+             const action = document.getElementById('commandTitleAction').value;
+             commandGeneratorGrid.querySelector('.cmd-param-titletext').classList.toggle('cmd-param-hidden', ['clear', 'reset', 'times'].includes(action));
+             commandGeneratorGrid.querySelector('.cmd-param-times').classList.toggle('cmd-param-hidden', action !== 'times');
+        }
+
+        // Ensure target is visible for commands that need it (re-check after base hiding)
+        const needsTarget = !['particle'].includes(commandType); // Add other targetless commands if needed
+        document.getElementById('param-target').classList.toggle('cmd-param-hidden', !needsTarget);
+
+        // Re-trigger generation after visibility change
+        generateCommand();
+    }
+
+    // Function to generate the command string
+    function generateCommand() {
+        const edition = commandEditionSelect.value;
+        const type = commandTypeSelect.value;
+        let command = '';
+        let isValid = true; // Assume valid initially
+
+        // Helper to get value or default
+        const getValue = (id, def = '') => document.getElementById(id)?.value.trim() || def;
+        // Helper to check if a visible input is non-empty
+        const isVisibleNonEmpty = (id) => {
+            const el = document.getElementById(id);
+            return el && !el.closest('.cmd-param-hidden') && isNonEmpty(el.value);
+        };
+        // Helper to check if a visible input passes a validation test
+        const isVisibleValid = (id, validator) => {
+            const el = document.getElementById(id);
+            return !el || el.closest('.cmd-param-hidden') || validator(el.value);
+        };
+
+        // Get common values (check visibility before using)
+        const target = getValue('commandTarget', '@p');
+        const item = getValue('commandItem');
+        const count = getValue('commandCount', '1');
+        const nbt = getValue('commandNbt');
+        const dataValue = getValue('commandDataValue', '0');
+        const effectName = getValue('commandEffectName');
+        const duration = getValue('commandEffectDuration', '30');
+        const amplifier = getValue('commandEffectAmplifier', '0');
+        const hideParticles = getValue('commandEffectParticles') === 'true';
+        const entity = getValue('commandSummonEntity');
+        const summonX = getValue('commandSummonX', '~');
+        const summonY = getValue('commandSummonY', '~');
+        const summonZ = getValue('commandSummonZ', '~');
+        const summonNbt = getValue('commandSummonNbt');
+        const tpDestination = getValue('commandTpDestination');
+        const tpYRot = getValue('commandTpYRot');
+        const tpXRot = getValue('commandTpXRot');
+        const tpCheck = getValue('commandTpCheck') === 'true';
+        const gamemode = getValue('commandGamemodeMode');
+        const xpAmount = getValue('commandXpAmount');
+        const xpUnit = getValue('commandXpUnit');
+        const titleAction = getValue('commandTitleAction');
+        const titleText = getValue('commandTitleText');
+        const titleFadeIn = getValue('commandTitleFadeIn', '20');
+        const titleStay = getValue('commandTitleStay', '60');
+        const titleFadeOut = getValue('commandTitleFadeOut', '20');
+        const sayMessage = getValue('commandSayMessage');
+        const particleName = getValue('commandParticleName');
+        const particleX = getValue('commandParticleX', '~');
+        const particleY = getValue('commandParticleY', '~');
+        const particleZ = getValue('commandParticleZ', '~');
+        const particleDX = getValue('commandParticleDX', '0');
+        const particleDY = getValue('commandParticleDY', '0');
+        const particleDZ = getValue('commandParticleDZ', '0');
+        const particleSpeed = getValue('commandParticleSpeed', '0');
+        const particleCount = getValue('commandParticleCount', '1');
+        const particleMode = getValue('commandParticleMode', 'normal');
+        const particleViewers = getValue('commandParticleViewers');
+
+
+        switch (type) {
+            case 'give':
+                isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandItem') && isVisibleNonEmpty('commandCount') && isVisibleValid('commandItem', isValidItem);
+                command = `/give ${target} ${item} ${count}`;
+                if (edition === 'java' && nbt) {
+                     isValid = isValid && isVisibleValid('commandNbt', isValidJson);
+                     command += ` ${nbt}`;
+                } else if (edition === 'bedrock' && dataValue !== '0') { // Only add data value if not default 0
+                    isValid = isValid && isVisibleValid('commandDataValue', isNumber);
+                    command += ` ${dataValue}`;
+                }
+                break;
+            case 'effect_give':
+                isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandEffectName') && isVisibleValid('commandEffectDuration', isNumber) && isVisibleValid('commandEffectAmplifier', isNumber);
+                 command = `/effect give ${target} ${effectName} ${duration} ${amplifier}${hideParticles ? ' true' : ''}`;
+                 if (edition === 'bedrock') command = `/effect ${target} ${effectName} ${duration} ${amplifier}${hideParticles ? ' true' : ''}`; // Bedrock syntax slightly different
+                break;
+            case 'effect_clear':
+                 isValid = isVisibleNonEmpty('commandTarget');
+                 command = `/effect clear ${target}`;
+                 if (isVisibleNonEmpty('commandEffectName')) command += ` ${effectName}`;
+                 if (edition === 'bedrock') command = `/effect ${target} clear`; // Bedrock clear has no effect name arg
+                break;
+            case 'summon':
+                isValid = isVisibleNonEmpty('commandSummonEntity') && isVisibleValid('commandSummonEntity', isValidItem) && isVisibleValid('commandSummonX', isCoordinate) && isVisibleValid('commandSummonY', isCoordinate) && isVisibleValid('commandSummonZ', isCoordinate);
+                command = `/summon ${entity} ${summonX} ${summonY} ${summonZ}`;
+                 if (edition === 'java' && summonNbt) {
+                     isValid = isValid && isVisibleValid('commandSummonNbt', isValidJson);
+                     command += ` ${summonNbt}`;
+                 }
+                break;
+             case 'tp':
+                 isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandTpDestination');
+                 command = `/tp ${target} ${tpDestination}`;
+                 if(edition === 'bedrock') {
+                     if (isVisibleNonEmpty('commandTpYRot') && isVisibleNonEmpty('commandTpXRot')) {
+                        isValid = isValid && isVisibleValid('commandTpYRot', isCoordinate) && isVisibleValid('commandTpXRot', isCoordinate);
+                         command += ` ${tpYRot} ${tpXRot}`;
+                     } else if (isVisibleNonEmpty('commandTpYRot') || isVisibleNonEmpty('commandTpXRot')){
+                         isValid = false; // Must provide both rotations or neither
+                     }
+                     if(tpCheck) command += ` true`;
+                 }
+                 break;
+            case 'gamemode':
+                isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandGamemodeMode');
+                command = `/gamemode ${gamemode} ${target}`;
+                break;
+             case 'xp_add':
+                 isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandXpAmount') && isVisibleValid('commandXpAmount', isNumber);
+                 command = `/xp add ${target} ${xpAmount} ${xpUnit}`;
+                 if (edition === 'bedrock') command = `/xp ${xpAmount}${xpUnit === 'levels' ? 'L' : ''} ${target}`;
+                 break;
+             case 'xp_set':
+                 isValid = isVisibleNonEmpty('commandTarget') && isVisibleNonEmpty('commandXpAmount') && isVisibleValid('commandXpAmount', isNumber);
+                 command = `/xp set ${target} ${xpAmount} ${xpUnit}`;
+                  if (edition === 'bedrock') command = `/xp ${xpAmount}${xpUnit === 'levels' ? 'L' : ''} ${target}`; // Bedrock doesn't differentiate add/set
+                 break;
+             case 'kill':
+                  isValid = isVisibleNonEmpty('commandTarget'); // Basic validation only
+                 command = `/kill ${target}`;
+                 break;
+            case 'title':
+                 isValid = isVisibleNonEmpty('commandTarget');
+                 command = `/title ${target} ${titleAction}`;
+                 if (titleAction === 'times') {
+                    isValid = isValid && isVisibleValid('commandTitleFadeIn', isNumber) && isVisibleValid('commandTitleStay', isNumber) && isVisibleValid('commandTitleFadeOut', isNumber);
+                    command += ` ${titleFadeIn} ${titleStay} ${titleFadeOut}`;
+                 } else if (!['clear', 'reset'].includes(titleAction)) {
+                     isValid = isValid && isVisibleNonEmpty('commandTitleText');
+                     if(edition === 'java') isValid = isValid && isVisibleValid('commandTitleText', isValidJson);
+                     command += ` ${titleText}`;
+                 }
+                 break;
+            case 'say':
+                 isValid = isVisibleNonEmpty('commandSayMessage');
+                 command = `/say ${sayMessage}`;
+                 break;
+            case 'particle':
+                isValid = isVisibleNonEmpty('commandParticleName') && isVisibleValid('commandParticleName', isValidItem)
+                          && isVisibleValid('commandParticleX', isCoordinate) && isVisibleValid('commandParticleY', isCoordinate) && isVisibleValid('commandParticleZ', isCoordinate)
+                          && isVisibleValid('commandParticleCount', isNumber);
+                 command = `/particle ${particleName} ${particleX} ${particleY} ${particleZ}`;
+                 if(edition === 'java') {
+                    isValid = isValid && isVisibleValid('commandParticleDX', isNumber) && isVisibleValid('commandParticleDY', isNumber) && isVisibleValid('commandParticleDZ', isNumber) && isVisibleValid('commandParticleSpeed', isNumber);
+                    command += ` ${particleDX} ${particleDY} ${particleDZ} ${particleSpeed} ${particleCount}`;
+                    if (particleMode === 'force') command += ` force`;
+                    if (isVisibleNonEmpty('commandParticleViewers')) command += ` ${particleViewers}`;
+                 } else { // Bedrock particle has fewer args
+                     command += ` ${particleCount}`; // Bedrock only has count after position
+                 }
+                 break;
+            default:
+                command = 'Comando no implementado';
+                isValid = false;
+        }
+
+        generatedCommandOutput.value = command;
+        generatedCommandOutput.classList.toggle('command-invalid', !isValid);
+    }
+
+
+    // Initialization and Event Listeners for Command Generator
+    function initializeCommandGenerator() {
+        // Add listeners to main selectors
+        commandEditionSelect.addEventListener('change', updateCommandParamsVisibility);
+        commandTypeSelect.addEventListener('change', updateCommandParamsVisibility);
+
+        // Add listeners to all parameter inputs to regenerate on change
+        allParamInputs.forEach(input => {
+            input.addEventListener('input', generateCommand);
+            // Also listen for 'change' on selects
+            if (input.tagName === 'SELECT') {
+                input.addEventListener('change', generateCommand);
+            }
+        });
+
+        // Special listener for title action select as it changes visibility of other inputs
+        document.getElementById('commandTitleAction')?.addEventListener('change', updateCommandParamsVisibility);
+
+        // Initial setup
+        updateCommandParamsVisibility(); // Set initial visibility
+    }
+
+    // --- Copy Command Button ---
+    copyCommandButton.addEventListener('click', () => {
+        if (!generatedCommandOutput.value || generatedCommandOutput.classList.contains('command-invalid')) {
+            // Optional: Indicate why copy failed (e.g., invalid command)
+            const originalText = copyCommandButton.innerHTML;
+            copyCommandButton.innerHTML = '<i class="fas fa-times"></i> Inválido';
+            copyCommandButton.disabled = true;
+             setTimeout(() => {
+                copyCommandButton.innerHTML = originalText;
+                copyCommandButton.disabled = false;
+            }, 1500);
+            return;
+        };
+        navigator.clipboard.writeText(generatedCommandOutput.value)
+            .then(() => {
+                const originalText = copyCommandButton.innerHTML;
+                copyCommandButton.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                copyCommandButton.disabled = true;
+                setTimeout(() => {
+                    copyCommandButton.innerHTML = originalText;
+                    copyCommandButton.disabled = false;
+                }, 1500);
+            })
+            .catch(err => { console.error('Error al copiar comando:', err); alert('Error al copiar el comando.'); });
+    });
+
+    // --- Server Status Checker Logic (unchanged, minified for space) ---
+     const checkStatusButton=document.getElementById('checkStatusButton'); const statusResultsArea=document.getElementById('statusResults'); const serverIpInput=document.getElementById('serverIpInput'); const serverPortInput=document.getElementById('serverPortInput');
+     checkStatusButton.addEventListener('click',()=>{ const ip=serverIpInput.value.trim(); let port=serverPortInput.value.trim(); if(!ip){ statusResultsArea.innerHTML='<p style="color: var(--error-color);">Por favor, introduce la IP o dominio del servidor.</p>'; return; } const serverAddress=ip+(port&&port!=='25565'?`:${port}`:''); const apiUrl=`https://api.mcsrvstat.us/3/${encodeURIComponent(serverAddress)}`; statusResultsArea.innerHTML=`<p>Consultando ${ip}${port?':'+port:''}... <i class="fas fa-spinner fa-spin"></i></p>`; checkStatusButton.disabled=true; fetch(apiUrl).then(r=>{if(!r.ok){return r.json().catch(()=>{throw new Error(`Error HTTP ${r.status}`)}).then(eD=>{throw new Error(eD.error||`Error HTTP ${r.status}`)})} return r.json()}).then(d=>{let oH=''; if(d.online){const mH=d.motd?.html?d.motd.html.join('<br>'):(d.motd?.clean?d.motd.clean.join('<br>'):'N/A'); const f=d.icon?`<img src="${d.icon}" class="favicon" alt="Favicon">`:''; const pO=d.players?.online??'N/A'; const pM=d.players?.max??'N/A'; const v=d.version??'N/A'; const pr=d.protocol?.version??'N/A'; const s=d.software??'N/A'; oH=` <p><strong class="status-online"><i class="fas fa-check-circle"></i> En Línea</strong> ${d.hostname?`(${d.hostname})`:''}</p> <p>${f}<strong>MOTD:</strong></p> <div class="motd">${mH}</div> <p><strong>Jugadores:</strong> ${pO} / ${pM}</p> <p><strong>Versión:</strong> ${v} (Protocolo: ${pr})</p> ${s!=='N/A'?`<p><strong>Software:</strong> ${s}</p>`:''} `; if(d.players?.list&&d.players.list.length>0){oH+=`<p><strong>Jugadores Conectados (${d.players.list.length}):</strong> ${d.players.list.map(p=>p.name||p).join(', ')}</p>`}}else{oH=`<p><strong class="status-offline"><i class="fas fa-times-circle"></i> Desconectado</strong> ${d.hostname?`(${d.hostname})`:''}</p>`; let re="El servidor no responde o la dirección es incorrecta."; if(d.debug?.ping===false)re="No se pudo hacer ping al servidor (puede estar offline o bloqueando pings)."; else if(d.debug?.query===false)re="No se pudo consultar el servidor (query deshabilitado)."; else if(d.debug?.srv===false&&ip.split('.').length>2&&!port)re="No se encontró registro SRV para este dominio."; else if(d.debug?.blocked)re="La API está bloqueada por este servidor."; oH+=`<p style="color: var(--text-medium);">${re}</p>`; if(d.ip&&d.port)oH+=`<p style="font-size:0.8em; color: var(--text-medium)">IP Resuelta: ${d.ip}:${d.port}</p>`} statusResultsArea.innerHTML=oH}).catch(e=>{console.error('Error fetching server status:',e); statusResultsArea.innerHTML=`<p style="color: var(--error-color);"><i class="fas fa-exclamation-triangle"></i> Error al consultar estado.</p><p style="font-size: 0.8em; color: var(--text-medium);">${e.message}</p>`}).finally(()=>{checkStatusButton.disabled=false})});
+
+</script>
+
+</body>
+</html>
