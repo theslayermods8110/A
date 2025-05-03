@@ -1,56 +1,59 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><title>APK Deep Scanner</title><style>
-body{font-family:sans-serif;background:#eef;padding:20px}
+body{font-family:sans-serif;background:#f4f4f4;padding:20px;margin:0;height:100vh;display:flex;flex-direction:column}
 input,button{padding:8px;margin:5px;font-size:16px}
-#result{white-space:pre-wrap;background:#fff;padding:10px;border:1px solid #ccc;max-height:500px;overflow:auto}
-hr{border:0;border-top:1px solid #aaa;margin:10px 0}
-span.url{color:blue}
-span.key{color:red;font-weight:bold}
-span.b64{color:green}
+#result{flex:1;overflow:auto;padding:10px;border:2px solid #bbb;background:#fff;margin-top:10px;border-radius:8px;scroll-behavior:smooth}
+.box{border:1px solid #ccc;padding:10px;margin:10px 0;white-space:pre-wrap;border-radius:5px}
+.url{color:blue}.key{color:red;font-weight:bold}.b64{color:green}.ruta{color:#555;font-size:14px}
+/* Scroll personalizado */
+#result::-webkit-scrollbar{width:12px}
+#result::-webkit-scrollbar-track{background:#eee}
+#result::-webkit-scrollbar-thumb{background:#999;border-radius:6px}
+#result:hover::-webkit-scrollbar-thumb{background:#666}
 </style></head><body>
-<h2>Buscador Profundo en APK (100 líneas)</h2>
+<h2>Buscador Profundo en APK</h2>
 <input type="file" id="apk" accept=".apk">
-<input type="text" id="query" placeholder="Texto exacto o parcial">
+<input type="text" id="query" placeholder="Buscar texto o patrón">
 <button onclick="buscar()">Buscar</button>
-<div id="result">🔍 Carga un APK y escribe algo a buscar...</div>
+<div id="result">🔍 Carga un APK y busca algo como <code>verifyCardResult</code></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 let archivos={};
-document.getElementById("apk").addEventListener("change", async e=>{
-  const file=e.target.files[0];
-  if(!file)return;
-  const zip=await JSZip.loadAsync(file);
-  const exts=['.smali','.xml','.java','.kt','.txt','.json','.cfg','.ini'];
-  const promesas=[];
+apk.onchange=async e=>{
+  const zip=await JSZip.loadAsync(e.target.files[0]);
+  const prom=[];
   zip.forEach((path,f)=>{
-    if(!f.dir&&exts.some(x=>path.endsWith(x))){
-      promesas.push(f.async("string").then(c=>archivos[path]=c));
-    }
+    if(!f.dir)prom.push(f.async("string").then(c=>{
+      if(/[\x20-\x7E]/.test(c))archivos[path]=c;
+    }).catch(()=>{}));
   });
-  await Promise.all(promesas);
-  alert("✅ "+Object.keys(archivos).length+" archivos listos para escanear.");
-});
-function resaltar(str){
-  str=str.replace(/(http[s]?:\/\/[^\s"']+)/g,'<span class="url">$1</span>');
-  str=str.replace(/(?:(apikey|token|key)[^\s"':=]*[:=]?[ ]?[^\s"']+)/gi,'<span class="key">$&</span>');
-  str=str.replace(/\b[a-zA-Z0-9+/=]{16,}\b/g,'<span class="b64">$&</span>');
-  return str;
+  await Promise.all(prom);
+  alert("✅ "+Object.keys(archivos).length+" archivos cargados.");
+};
+function resaltar(s){
+  s=s.replace(/https?:\/\/\S+/g,'<span class="url">$&</span>');
+  s=s.replace(/\b(apikey|token|key)[^:=\s]*[:=]?\s*\S+/gi,'<span class="key">$&</span>');
+  s=s.replace(/\b[A-Za-z0-9+/=]{16,}\b/g,'<span class="b64">$&</span>');
+  return s;
+}
+function similar(a,b){
+  a=a.toLowerCase();b=b.toLowerCase();
+  return a.includes(b)||b.includes(a)||a.replace(/\W/g,'').includes(b.replace(/\W/g,''));
 }
 function buscar(){
-  const q=document.getElementById("query").value.toLowerCase();
-  if(!q)return;
-  let res='',total=0;
+  const q=query.value.trim();if(!q)return;
+  let html='',total=0;
   for(let ruta in archivos){
-    const lineas=archivos[ruta].split('\n');
-    let bloque='';
-    lineas.forEach((l,i)=>{
-      if(l.toLowerCase().includes(q)){
-        bloque+=`[Línea ${i+1}] ${resaltar(l)}\n`;
-        total++;
-      }
+    const txt=archivos[ruta],lines=txt.split('\n');
+    let box='';
+    lines.forEach((l,i)=>{
+      if(similar(l,q))box+=`[${i+1}] ${resaltar(l)}\n`;
     });
-    if(bloque)res+=`📄 ${ruta}\n${bloque}<hr>\n`;
+    if(box){
+      const tipo=/\.(smali|java|kt|xml)$/.test(ruta)?'🧩':'📄';
+      html+=`<div class="box"><div class="ruta">${tipo} <b>${ruta}</b></div>${box}</div>`;
+      total++;
+    }
   }
-  document.getElementById("result").innerHTML=res||"❌ Nada encontrado.";
+  result.innerHTML=total?html:"❌ Nada encontrado.";
 }
-</script>
-</body></html>
+</script></body></html>
